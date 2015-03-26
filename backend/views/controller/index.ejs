@@ -1,0 +1,131 @@
+<div class="page-header">
+	<h1>订单管理 <small><a id="remove_record_btn" class="btn btn-danger btn-sm pull-right">删除</a><a id="all_record_btn" class="btn btn-default btn-sm pull-right" style="margin-right: 10px">全选</a></small></h1>
+</div>
+<table id="order_table" class="display compact cell-border hover" cellspacing="0" width="100%">
+	<thead>
+		<tr>
+			<th>序号</th>
+			<th>菜名</th>
+			<th>份数</th>
+			<th>取餐时间</th>
+			<th>终端</th>
+			<th>IP</th>
+			<th>手机号</th>
+			<th>消息时间</th>
+			<th>状态</th>
+			<th>选择</th>
+		</tr>
+	</thead>
+	<tfoot>
+		<tr>
+			<th>序号</th>
+			<th>菜名</th>
+			<th>份数</th>
+			<th>取餐时间</th>
+			<th>终端</th>
+			<th>IP</th>
+			<th>手机号</th>
+			<th>消息时间</th>
+			<th>状态</th>
+			<th>选择</th>
+		</tr>
+	</tfoot>
+
+	<tbody>
+		<% orders.forEach(function(order, index) { %>
+			<tr>
+				<td id='order_no'><%= order.order_no %></td>
+				<td><%= order.name %></td>
+				<td><%= order.amount %></td>
+				<td><%= order.pickup_date %></td>
+				<td><%= order.device_info %></td>
+				<td><%= order.ip %></td>
+				<td><%= order.phone_number %></td>
+				<td><%= order.updated_at.getDate()+'/'+(order.updated_at.getMonth()+1)+'/'+order.updated_at.getFullYear()+' '+order.updated_at.getHours()+':'+order.updated_at.getMinutes() %></td>
+				<td style="text-align: center"><% if (order.pickup_status) { %><a id="status_btn" class="btn btn-success btn-sm">已取</a><% } else { %><a id="status_btn" class="btn btn-warning btn-sm">未取</a><% } %></td>
+				<td style="text-align: center"><input id="remove_check" type="checkbox"/></td>
+			</tr>
+		<% }) %>
+	</tbody>
+</table>
+
+<script>
+$(document).ready(function() {
+    var dt = $('#order_table').DataTable();
+
+	$('#order_table tbody').on( 'click', 'tr a#status_btn', function () {
+ 		var order_no = parseInt($(this).parent('td').siblings('td#order_no').text());
+ 		var data = {
+ 			id: order_no,
+ 			pickup_status: true
+ 		}
+ 		if($(this).text()=='已取') {
+ 			data.pickup_status = false;
+ 		}
+ 		var pickup_status_button = $(this);
+ 		var confirm_info;
+ 		if (pickup_status_button.text()=='已取') {
+ 			confirm_info = "确定将订单 "+order_no+" 设回未取状态?"
+ 		} else {
+			confirm_info = "确定订单 "+order_no+" 已经被收取?";
+ 		}
+ 		if(confirm(confirm_info)) {
+	 		sendAjax('/orders/update', data, function(result){
+	 			if (result.status == 'success') {
+	 				if (pickup_status_button.text()=='已取') {
+	 					pickup_status_button.text('未取');
+	 					pickup_status_button.attr('class', 'btn btn-warning btn-sm');
+	 				} else {
+	 					pickup_status_button.text('已取');
+	 					pickup_status_button.attr('class', 'btn btn-success btn-sm');
+	 				}
+	 			}
+	        },function(jqXHR, textStatus, errorThrown){
+				console.log(JSON.parse(jqXHR.responseText));
+	        });			
+ 		}
+    });
+
+	var remove_order_no = [];
+    $('#order_table tbody').on( 'change', 'tr input#remove_check', function () {
+    	var order_no = parseInt($(this).parent('td').siblings('td#order_no').text());
+    	if ($(this).is(":checked")) {
+    		remove_order_no.push(order_no);
+    	} else {
+			remove_order_no = $.grep(remove_order_no, function(value) {
+			  return value != order_no;
+			});
+    	}
+    });
+
+    $("#remove_record_btn").click(function(){
+    	var data = {
+    		remove_order_no: remove_order_no,
+    	}
+    	sendAjax('/orders/remove', data, function(result){
+    		if (result.status == 'success') {
+    			location.reload();
+    		}
+    	},function(jqXHR, textStatus, errorThrown){
+			alert(JSON.parse(jqXHR.responseText));
+        });
+    });
+
+    var all_record_select_flag = false;
+    $("#all_record_btn").click(function(){
+    	if (all_record_select_flag) {
+    		all_record_select_flag = false;
+    		$('input#remove_check').prop( "checked", false );
+    		remove_order_no = [];
+    	} else {
+    		all_record_select_flag = true;
+    		$('input#remove_check').prop( "checked", true );
+    		$.each($('input#remove_check'),function(key, recoder){
+    			var order_no = parseInt($(recoder).parent('td').siblings('td#order_no').text());
+    			remove_order_no.push(order_no);
+    		});
+    	}
+    	console.log(remove_order_no);
+    });
+});
+</script>

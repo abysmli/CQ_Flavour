@@ -1,7 +1,8 @@
 var mongoose = require('mongoose');
+var setting = require('../setting.js');
 var autoIncrement = require('mongoose-auto-increment');
 
-var connection = mongoose.createConnection('mongodb://localhost/cq_flavour');
+var connection = mongoose.createConnection('mongodb://localhost/'+setting.database);
 autoIncrement.initialize(connection);
 
 var OrderSchema = new mongoose.Schema({

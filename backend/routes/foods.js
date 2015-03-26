@@ -18,14 +18,7 @@ router.post('/getAll', function(req, res, next) {
 });
 
 router.post('/add', function(req, res, next) {
-	var data = {
-		number: 'FC1',
-		name: 'Test',
-		details: 'Test_details',
-		price: 50.5,
-		suspend_status: false,
-		image: '123',
-	};
+	var data = {};
 
 	Food.create(data, function(err, food){
 	    if(err) 
@@ -37,19 +30,8 @@ router.post('/add', function(req, res, next) {
 });
 
 router.post('/update', function(req, res, next) {
-	var data = {
-		type: 'data',
-		id: '',
-		data: {
-			number: 'FC2',
-			name: 'Test2',
-			details: 'Test_details2',
-			price: 52.5,
-			suspend_status: false,
-			image: '1234',
-		}
-	};
-	Food.update({ number: 'FC1' }, data.data, function (err, numberAffected, raw) {
+	var data = {};
+	Food.update({ _id: 0 }, data, function (err, numberAffected, raw) {
 		if (err) 
 			res.json(err);
 		else

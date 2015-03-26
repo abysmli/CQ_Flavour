@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
+var setting = require('../setting.js');
 
-mongoose.connect('mongodb://localhost/cq_flavour');
+mongoose.connect('mongodb://localhost/'+setting.database);
 
 var FoodSchema = new mongoose.Schema({
 	number: String,

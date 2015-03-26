@@ -1,4 +1,5 @@
 var express = require('express');
+var partials = require('express-partials');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -9,6 +10,9 @@ var routes = require('./routes/index');
 var users = require('./routes/users');
 var foods = require('./routes/foods');
 var orders = require('./routes/orders');
+var controller = require('./routes/controller');
+var basicAuth = require('basic-auth');
+
 var app = express();
 
 // view engine setup
@@ -17,15 +21,17 @@ app.set('view engine', 'ejs');
 
 app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ extended: false , limit: '50mb'}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(partials());
 
 app.use('/', routes);
 app.use('/users', users);
 app.use('/foods', foods);
 app.use('/orders', orders);
+app.use('/controller', controller);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -63,6 +69,5 @@ app.use(function(req, res, next) {
     console.log('Client IP:', ip);
     next();
 });
-
 
 module.exports = app;

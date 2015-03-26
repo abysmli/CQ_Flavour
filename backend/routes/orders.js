@@ -39,12 +39,10 @@ router.post('/add', function(req, res, next) {
 
 router.post('/update', function(req, res, next) {
 	var data = {
-		id: '',
-		data: {
-			pickup_status: true,
-		}
+		id: req.body.id,
+		pickup_status: req.body.pickup_status,
 	};
-	Order.update({ order_no: 1 }, data.data, function (err, numberAffected, raw) {
+	Order.update({ order_no: data.id }, { pickup_status: data.pickup_status }, function (err, numberAffected, raw) {
 		if (err) 
 			res.json(err);
 		else
@@ -53,8 +51,13 @@ router.post('/update', function(req, res, next) {
 });
 
 router.post('/remove', function(req, res, next) {
-	var data = {};
-	Order.remove(data, function (err) {
+	var query;
+	if (req.body['remove_order_no[]'].constructor == Array) {
+		query = {$in: req.body['remove_order_no[]']};
+	} else {
+		query = req.body['remove_order_no[]'];
+	}
+	Order.remove({order_no: query}, function (err) {
   		if (err) 
 			res.json(err);
 		else

@@ -11,9 +11,11 @@
     "debug": "~2.1.1",
     "ejs": "~2.2.3",
     "express": "~4.11.1",
+    "express-partials": "*",
     "morgan": "~1.5.1",
     "serve-favicon": "~2.2.0",
     "mongoose": "*",
-    "mongoose-auto-increment": "*"
+    "mongoose-auto-increment": "*",
+    "basic-auth": "*"
   }
 }
