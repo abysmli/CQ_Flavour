@@ -19,7 +19,7 @@ router.get('/', auth, function(req, res, next) {
 });
 
 router.get('/food', auth, function(req, res, next) {
-	Food.find({},null,{sort: {updated_at: -1}},function (err, foods) {
+	Food.find({},null,{sort: {updated_at: -1}}, function (err, foods) {
 		if (err) 
 			res.render('error');
 		else

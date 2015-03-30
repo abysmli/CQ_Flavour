@@ -1,11 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var Order = require('../models/order.js');
-
-/* GET orders listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
+var auth = require('../models/auth.js');
 
 router.post('/getAll', function(req, res, next) {
 	var data = {};
@@ -19,25 +15,25 @@ router.post('/getAll', function(req, res, next) {
 
 router.post('/add', function(req, res, next) {
 	var data = {
-		name: 'Test',
-		pickup_date: 'Today',
-		amount: 1,
+		name: req.body.name,
+		pickup_date: req.body.pickup_date,
+		amount: req.body.amount,
 		pickup_status: false,
-		device_info: 'android',
-		ip: '',
-		phone_number: '',
+		device_info: req.body.device_info,
+		ip: req.body.ip,
+		phone_number: req.body.phone_number,
 	};
 
 	Order.create(data, function(err, order) {
 	    if(err) 
 	    	res.json(err);
 	    else 
-	    	res.json({status: 'success', message:'Successfully Add Order Record!'});
+	    	res.json({status: 'success', order_no: order.order_no, message:'Successfully Add Order Record!'});
 	});
 
 });
 
-router.post('/update', function(req, res, next) {
+router.post('/update', auth, function(req, res, next) {
 	var data = {
 		id: req.body.id,
 		pickup_status: req.body.pickup_status,
@@ -50,7 +46,7 @@ router.post('/update', function(req, res, next) {
 	});		
 });
 
-router.post('/remove', function(req, res, next) {
+router.post('/remove', auth, function(req, res, next) {
 	var query;
 	if (req.body['remove_order_no[]'].constructor == Array) {
 		query = {$in: req.body['remove_order_no[]']};

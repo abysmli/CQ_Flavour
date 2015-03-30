@@ -1,15 +1,10 @@
 var express = require('express');
 var router = express.Router();
 var Food = require('../models/food.js');
-
-/* GET foods listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
+var auth = require('../models/auth.js');
 
 router.post('/getAll', function(req, res, next) {
-	var data = {};
-	Food.find(data, function (err, foods) {
+	Food.find({suspend_status: false}, function (err, foods) {
 		if (err) 
 			res.json(err);
 		else
@@ -17,7 +12,7 @@ router.post('/getAll', function(req, res, next) {
 	});
 });
 
-router.post('/add', function(req, res, next) {
+router.post('/add', auth, function(req, res, next) {
 	var data = {};
 
 	Food.create(data, function(err, food){
@@ -29,7 +24,7 @@ router.post('/add', function(req, res, next) {
 
 });
 
-router.post('/update', function(req, res, next) {
+router.post('/update', auth, function(req, res, next) {
 	var data = {};
 	Food.update({ _id: 0 }, data, function (err, numberAffected, raw) {
 		if (err) 
@@ -39,7 +34,7 @@ router.post('/update', function(req, res, next) {
 	});		
 });
 
-router.post('/remove', function(req, res, next) {
+router.post('/remove', auth, function(req, res, next) {
 	var data = {};
 	Food.remove(data, function (err) {
   		if (err) 

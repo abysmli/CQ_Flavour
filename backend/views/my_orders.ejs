@@ -18,13 +18,14 @@
 	<script src="/javascripts/main.js"></script>
 </head>
 <body>
-	<div data-role="page" id="index_page">
+	<div data-role="page" id="my_orders_page">
 		<div data-role="header" style="overflow:hidden;">
-			<h1> </h1>
+			<h1>Meine Bestellung</h1>
+			<a data-rel="back" data-transition="slide" class="ui-btn ui-icon-carat-l ui-btn-icon-notext ui-btn-inline ui-nodisc-icon ui-alt-icon"></a>
 			<a href="#setting_panel" class="ui-btn ui-btn-right ui-icon-bars ui-btn-icon-notext ui-btn-inline ui-nodisc-icon ui-alt-icon"></a>
 		</div><!-- /header -->
 		<div role="main" class="ui-content">
-			<ul id="foods_list" data-role="listview" data-inset="false">
+			<ul id="orders_list" data-role="listview" data-filter="true" data-filter-placeholder="Suchen Bestellung..." data-inset="false">
 			</ul>
 		</div>
 		<div data-role="panel" id="setting_panel" data-position="right" data-theme="b" data-display="overlay" data-position-fixed="true">
@@ -36,30 +37,24 @@
 		</div><!-- /panel -->
 	</div>
 	<script>
-		$(document).on("pageinit","#index_page", function( event ) {
-			var foods_list=[];
-			sendAjax('/foods/getAll/', {}, function(foods){
-				foods_list = foods;
+		$(document).on("pageinit","#my_orders_page", function( event ) {
+			if(localStorage.foods) {
+				var foods = JSON.parse(localStorage.foods);
 				$.each(foods, function( index, food ) {
-					$('ul#foods_list').append(
-					"<li>"+
-						"<a href='/food_details' id='"+ index +"' data-ajax='false'>"+
-							"<img src='"+ food.image +"'>"+
-							"<h2>"+ food.name +"</h2>"+
-							"<p>"+ food.details + "<em style='float:right; margin-right:20px'>" + food.price +" €</em></p>"+
+					console.log(foods);
+					$('ul#orders_list').append(
+						"<li data-icon='false'>"+
+						"<a href='#'>"+
+						"<img src='"+ food.image +"'>"+
+						"<h2>"+ food.name +"</h2>"+
+						"<p>"+ food.details +" - Abholung Datum: "+ food.pickup_date +"</p>"+
+						"<p>Bestellungnumber: "+ food.order_no +" - Menge: "+food.amount+"<em style='float:right; margin-right:20px'>" + food.price*food.amount +" €</em></p>"+
 						"</a>"+
-					"</li>"
+						"</li>"
 					);
 				});
-				$('ul#foods_list').listview( "refresh" );
-			}, function(jqXHR, textStatus, errorThrown){
-				alert(JSON.parse(jqXHR.responseText));
-        	});
-
-        	$('ul#foods_list').on('click', 'a', function(){
-        		var food = foods_list[parseInt($(this).attr('id'))];
-        		sessionStorage.food = JSON.stringify(food);
-        	});
+				$('ul#orders_list').listview('refresh');
+			}
 		});
 	</script>
 </body>

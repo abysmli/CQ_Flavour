@@ -18,14 +18,42 @@
 	<script src="/javascripts/main.js"></script>
 </head>
 <body>
-	<div data-role="page" id="index_page">
+	<div data-role="page">
 		<div data-role="header" style="overflow:hidden;">
-			<h1> </h1>
+			<h1>Übersicht und Kontakt</h1>
+			<a data-rel="back" data-transition="slide" class="ui-btn ui-icon-carat-l ui-btn-icon-notext ui-btn-inline ui-nodisc-icon ui-alt-icon"></a>
 			<a href="#setting_panel" class="ui-btn ui-btn-right ui-icon-bars ui-btn-icon-notext ui-btn-inline ui-nodisc-icon ui-alt-icon"></a>
 		</div><!-- /header -->
-		<div role="main" class="ui-content">
-			<ul id="foods_list" data-role="listview" data-inset="false">
-			</ul>
+		<div role="main" class="ui-content" style="background-color: #d7b56d; text-shadow: none;" >
+			<img src="/images/CQF-Banner.png" style="width:100%">
+			<h4>KONTAKT:</h4>
+			<p>Tel.: 0175 6287 807</p>
+			<p>Tel.: +49 (0)711 479 1300</p>
+			<p>Email: info@cqflavour.de</p>
+			<p>Adresse: Kirchheimer Str. 126</p>
+			<p>70619, Stuttgart</p>
+			<br/>
+			<h4>ÖFFNUNGSZEITEN</h4>
+			<p>Mo. - Sa.: 11:30 bis 15:00</p>
+			<p>17:30 bis 22:30</p>
+			<p>So. und Feiertags: 11:30 bis 22:00</p>
+			<p>( Warmküche bis 30 Min. vor Schließzeit )</p>
+			<br/>
+			<h4>IMPRESSUM</h4>
+			<p>China Restaurant CQ Flavour</p>
+			<p>Inhaber Pei Wu</p>
+			<p>Kirchheimerstr. 126</p>
+			<p>70619 Stuttgart</p>
+			<br/>
+			<p>T: +49 (0) 711 479 1300</p>
+			<p>F: +49 (0) 711 479 1301</p>
+			<p>M: +49 (0) 175 6287 807</p>
+			<br/>
+			<p>E: info@cqflavour.de</p>
+			<p>Bankverbindung:</p>
+			<p>IBAN: DE94 60050101 000 7761177</p>
+			<p>BIC/SWIFT: SOLADEST</p>
+			<p>USt-IdNr.: DE 292894892</p>
 		</div>
 		<div data-role="panel" id="setting_panel" data-position="right" data-theme="b" data-display="overlay" data-position-fixed="true">
 			<ul data-role="listview">
@@ -35,32 +63,5 @@
 			</ul>
 		</div><!-- /panel -->
 	</div>
-	<script>
-		$(document).on("pageinit","#index_page", function( event ) {
-			var foods_list=[];
-			sendAjax('/foods/getAll/', {}, function(foods){
-				foods_list = foods;
-				$.each(foods, function( index, food ) {
-					$('ul#foods_list').append(
-					"<li>"+
-						"<a href='/food_details' id='"+ index +"' data-ajax='false'>"+
-							"<img src='"+ food.image +"'>"+
-							"<h2>"+ food.name +"</h2>"+
-							"<p>"+ food.details + "<em style='float:right; margin-right:20px'>" + food.price +" €</em></p>"+
-						"</a>"+
-					"</li>"
-					);
-				});
-				$('ul#foods_list').listview( "refresh" );
-			}, function(jqXHR, textStatus, errorThrown){
-				alert(JSON.parse(jqXHR.responseText));
-        	});
-
-        	$('ul#foods_list').on('click', 'a', function(){
-        		var food = foods_list[parseInt($(this).attr('id'))];
-        		sessionStorage.food = JSON.stringify(food);
-        	});
-		});
-	</script>
 </body>
 </html>
