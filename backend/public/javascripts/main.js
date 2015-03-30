@@ -1,6 +1,6 @@
 function sendAjax(url, data, success, error) {
   $.ajax({
-    url: 'http://localhost:3000'+url,
+    url: 'http://www.icedeer.net:9000'+url,
     type:'POST',
     data: data,
     success: success,
